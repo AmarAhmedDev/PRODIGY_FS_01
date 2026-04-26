@@ -163,7 +163,7 @@ const SignUp_SignIn = () => {
           displayName: formData.name
         });
         
-        alert('Account created successfully!');
+        alert(`Account created successfully for ${formData.name}!`);
         setFormData({
           name: '',
           email: '',
@@ -172,16 +172,20 @@ const SignUp_SignIn = () => {
           loginEmail: '',
           loginPassword: ''
         });
-        setRegisterActive(false);
+        // App.jsx will automatically redirect because of onAuthStateChanged
       } catch (error) {
-        console.error("SignUp Error:", error.code);
-        let errorMessage = 'Failed to create account. Please try again.';
+        console.error("SignUp Error:", error.code, error.message);
+        let errorMessage = 'Failed to create account.';
         if (error.code === 'auth/email-already-in-use') {
           errorMessage = 'This email is already in use.';
         } else if (error.code === 'auth/invalid-email') {
           errorMessage = 'Invalid email address.';
         } else if (error.code === 'auth/weak-password') {
           errorMessage = 'Password is too weak.';
+        } else if (error.code === 'auth/network-request-failed') {
+          errorMessage = 'Network error: Please check your internet connection or disable ad-blockers/firewalls and try again.';
+        } else {
+          errorMessage = 'Error: ' + error.message;
         }
         setErrors(prev => ({ ...prev, general: errorMessage }));
       } finally {
@@ -196,19 +200,17 @@ const SignUp_SignIn = () => {
       setLoading(true);
       try {
         await signInWithEmailAndPassword(auth, formData.loginEmail, formData.loginPassword);
-        alert('Signed in successfully!');
-        setFormData(prev => ({
-          ...prev,
-          loginEmail: '',
-          loginPassword: ''
-        }));
       } catch (error) {
-        console.error("SignIn Error:", error.code);
-        let errorMessage = 'Failed to sign in. Please check your credentials.';
+        console.error("SignIn Error:", error.code, error.message);
+        let errorMessage = 'Failed to sign in.';
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
           errorMessage = 'Invalid email or password.';
         } else if (error.code === 'auth/too-many-requests') {
           errorMessage = 'Too many failed attempts. Please try again later.';
+        } else if (error.code === 'auth/network-request-failed') {
+          errorMessage = 'Network error: Please check your internet connection and try again.';
+        } else {
+          errorMessage = 'Error: ' + error.message;
         }
         setErrors(prev => ({ ...prev, general: errorMessage }));
       } finally {
@@ -222,10 +224,9 @@ const SignUp_SignIn = () => {
     setLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
-      alert('Signed in with Google successfully!');
     } catch (error) {
-      console.error("Google Sign In Error:", error.code);
-      let errorMessage = 'Failed to sign in with Google.';
+      console.error("Google Sign In Error:", error.code, error.message);
+      let errorMessage = 'Google Sign In failed: ' + error.message;
       if (error.code === 'auth/popup-closed-by-user') {
         errorMessage = 'Sign in popup was closed.';
       }
@@ -255,7 +256,7 @@ const SignUp_SignIn = () => {
 
     try {
       await sendPasswordResetEmail(auth, formData.loginEmail);
-      alert(`Password reset link sent to ${formData.loginEmail}`);
+      setErrors(prev => ({ ...prev, general: `Password reset link sent to ${formData.loginEmail}` }));
     } catch (error) {
       console.error("Reset Error:", error.code);
       let errorMessage = 'Failed to send reset email.';
@@ -279,7 +280,18 @@ const SignUp_SignIn = () => {
           </div>
           <span>or use your Email for Registration</span>
           
-          {errors.general && <span className="error-message" style={{textAlign: 'center', alignSelf: 'center'}}>{errors.general}</span>}
+          {errors.general && (
+            <div className="error-message" style={{ 
+              textAlign: 'center', 
+              padding: '10px', 
+              background: '#fef2f2', 
+              borderRadius: '8px', 
+              marginBottom: '10px',
+              border: '1px solid #fee2e2'
+            }}>
+              {errors.general}
+            </div>
+          )}
 
           <input 
             type="text" 
@@ -343,7 +355,18 @@ const SignUp_SignIn = () => {
           </div>
           <span>or Use Your Email Password</span>
           
-          {errors.general && <span className="error-message" style={{textAlign: 'center', alignSelf: 'center'}}>{errors.general}</span>}
+          {errors.general && (
+            <div className="error-message" style={{ 
+              textAlign: 'center', 
+              padding: '10px', 
+              background: '#fef2f2', 
+              borderRadius: '8px', 
+              marginBottom: '10px',
+              border: '1px solid #fee2e2'
+            }}>
+              {errors.general}
+            </div>
+          )}
 
           <input 
             type="email" 
