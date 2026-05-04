@@ -270,7 +270,7 @@ const SignUp_SignIn = () => {
   return (
     <div className={`container ${registerActive ? 'active' : ''}`}> 
       <div className="form-container sign-up">
-        <form onSubmit={handleSignUp}>
+        <form onSubmit={handleSignUp} autoComplete="off">
           <h1>Create Account</h1>
           <div className="social-icons">
             <a href="#" className='icon' onClick={handleGoogleSignIn}> <i className="fa-brands fa-google-plus-g"></i></a>
@@ -313,6 +313,7 @@ const SignUp_SignIn = () => {
             onChange={handleInputChange}
             className={errors.email ? 'error' : ''}
             disabled={loading}
+            autoComplete="off"
           />
           {errors.email && <span className="error-message">{errors.email}</span>}
           
@@ -324,6 +325,7 @@ const SignUp_SignIn = () => {
             onChange={handleInputChange}
             className={errors.password ? 'error' : ''}
             disabled={loading}
+            autoComplete="new-password"
           />
           {errors.password && <span className="error-message">{errors.password}</span>}
           
@@ -345,7 +347,7 @@ const SignUp_SignIn = () => {
       </div>
       
       <div className="form-container sign-in">
-        <form onSubmit={handleSignIn}>
+        <form onSubmit={handleSignIn} autoComplete="off">
           <h1>Sign In</h1>
           <div className="social-icons">
             <a href="#" className='icon' onClick={handleGoogleSignIn}> <i className="fa-brands fa-google-plus-g"></i></a>
@@ -376,6 +378,7 @@ const SignUp_SignIn = () => {
             onChange={handleInputChange}
             className={errors.loginEmail ? 'error' : ''}
             disabled={loading}
+            autoComplete="off"
           />
           {errors.loginEmail && <span className="error-message">{errors.loginEmail}</span>}
           
@@ -387,6 +390,7 @@ const SignUp_SignIn = () => {
             onChange={handleInputChange}
             className={errors.loginPassword ? 'error' : ''}
             disabled={loading}
+            autoComplete="new-password"
           />
           {errors.loginPassword && <span className="error-message">{errors.loginPassword}</span>}
           
